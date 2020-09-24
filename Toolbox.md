@@ -52,7 +52,7 @@ namespace HelloWorld	//package in Java
 With the help of the $-Sign you can bind Code directly to a String generation.
 
 ```c#
-string s = $"My Name is : {Pascal.Firstname} {Pascal.Surname} // My Name is Pascal Hauser
+string s = $"Name: {Pascal.Firstname} {Pascal.Surname} // Name: Pascal Hauser
 ```
 
 

@@ -8,10 +8,15 @@ namespace Tutorial
     {
         static void Main(string[] args)
         {
-            Person Pascal = new Person("Pascal", "Hauser");
-            Console.WriteLine(Pascal.Firstname + Pascal.Surname);
-            string s = $"My Name is {Pascal.Firstname}";
-            Console.WriteLine(s);
+ 
+            // Simple personRegister test
+            var personRegister = new PersonRegister();
+            Console.WriteLine($"First Person: {personRegister[0].Firstname} {personRegister[0].Surname}");
+
+            Console.WriteLine("Last Person: {0} {1}",
+                personRegister[personRegister.Count - 1].Firstname,
+                personRegister[personRegister.Count - 1].Surname);
+
             Console.WriteLine("Press any key to quit");
             Console.ReadKey();
         }
