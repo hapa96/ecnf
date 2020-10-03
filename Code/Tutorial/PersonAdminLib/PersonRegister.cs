@@ -7,6 +7,7 @@ namespace PersonAdminLib
     public class PersonRegister
     {
         private List<Person> personList;
+        public IList<Person> Persons { get { return personList; } }
 
         public PersonRegister()
         {
@@ -29,6 +30,19 @@ namespace PersonAdminLib
             {
                 return personList.Count;
             } }
+
+        
+        public void Sort(Comparison<Person> comparison)
+        {
+            personList.Sort(comparison);
+        }
+        public void PrintPersons()
+        {
+            foreach (var p in Persons)
+                Console.WriteLine($"{p.Surname}, {p.Firstname}");
+        }
+
+  
     }
 }
     

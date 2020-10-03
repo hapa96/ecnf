@@ -17,8 +17,27 @@ namespace Tutorial
                 personRegister[personRegister.Count - 1].Firstname,
                 personRegister[personRegister.Count - 1].Surname);
 
-            Console.WriteLine("Press any key to quit");
-            Console.ReadKey();
+
+            Console.WriteLine("###Firstname");
+            personRegister.Sort(CompareByFirstname);
+            personRegister.PrintPersons();
+            Console.WriteLine("###Lastname");
+            personRegister.Sort(CompareByLastname);
+            personRegister.PrintPersons();
+
+
+
+
+
+
+
+
         }
+
+        static int CompareByFirstname(Person p1, Person p2) { return p1.Firstname.CompareTo(p2.Firstname); }
+
+        static int CompareByLastname(Person p1, Person p2) { return p1.Surname.CompareTo(p2.Surname); }
+
+        
     }
 }
