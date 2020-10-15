@@ -33,7 +33,7 @@ namespace Fhnw.Ecnf.RoutePlanner.RoutePlannerLib
             // Iterate over Dictionary
             foreach (KeyValuePair<City, int> entry in requestCounter)
             {
-                Console.WriteLine($"To City: {entry.Key.Name} has been requested {entry.Value} times");
+                Console.WriteLine($"ToCity: {entry.Key.Name} has been requested {entry.Value} times");
             }
         }
 
