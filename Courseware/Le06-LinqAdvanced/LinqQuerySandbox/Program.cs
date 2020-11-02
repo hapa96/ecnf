@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 
 namespace LinqQuerySandbox
@@ -52,7 +53,6 @@ namespace LinqQuerySandbox
             WriteTaskHeader(Task_1_1);
             // Eine Person in der Liste heisst Pascal
             var sameName = persons.Any(x => x.FirstName == "Pascal");
-            Console.WriteLine(sameName);
         }
 
         static private void Task_1_2(IEnumerable<Person> persons)
@@ -65,7 +65,7 @@ namespace LinqQuerySandbox
         static private void Task_1_3(IEnumerable<Person> persons)
         {
             WriteTaskHeader(Task_1_3);
-            var allPersonsHaveAtLeastOneCar = persons.All(x => x.Cars.Count() > 0);
+            var allPersonsHaveAtLeastOneCar = persons.All(x => x.Cars.Any());
             Console.WriteLine($"All Persons have at least one car: {allPersonsHaveAtLeastOneCar}");
         }
 
@@ -73,15 +73,23 @@ namespace LinqQuerySandbox
         {
             //TODO
             WriteTaskHeader(Task_1_4);
-            // var  managerCars = persons.Where(x => x.
+            var managerCars = persons.OfType<Manager>().SelectMany(p => p.Cars).Select(c => c.Model).Distinct();
+            foreach( var brand in managerCars)
+            {
+                Console.WriteLine(brand);
+
+            }
         }
 
         static private void Task_1_5(IEnumerable<Person> persons)
         {
             //TODO
             WriteTaskHeader(Task_1_5);
-            var firstLettersOfName = persons.Select(x => x.FirstName); 
-            Console.WriteLine($"All first Letters of Names: {firstLettersOfName}");
+            var firstLettersOfName = persons.Select(x => x.FirstName[0]).Distinct();
+            foreach (var item in firstLettersOfName)
+            {
+                Console.WriteLine(item);
+            }
         }
 
         static private void Task_1_6(IEnumerable<Person> persons)
@@ -100,35 +108,39 @@ namespace LinqQuerySandbox
         static private void Task_2_a(IEnumerable<Person> persons)
         {
             WriteTaskHeader(Task_2_a);
-            //var groupedSortedNames = persons.GroupBy(k => k.FirstName)
+            var groupedPerson = persons.GroupBy(p => p.FirstName).OrderBy(p => p.Key);
+            foreach (var personGroup in groupedPerson)
+            {
+                Console.WriteLine($"{personGroup.Key} has count: {personGroup.Count()} members.");
+
+            }
         }
 
         private static void Task_2_b(IEnumerable<Person> persons)
         {
             WriteTaskHeader(Task_2_b);
-            Console.WriteLine(persons.Where(x => x.FirstName == "Bill").OrderBy(x => x.LastName).First());
+            Console.WriteLine(persons.Where(x => x.FirstName == "Bill").OrderBy(x => x.LastName).First().LastName );
         }
 
         static private void Task_2_c(IEnumerable<Person> persons)
         {
             WriteTaskHeader(Task_2_c);
             Console.WriteLine($"Average cars per Person: {persons.Average(p => p.Cars.Count())}");
-            //Console.WriteLine($"Most choosen Colour for Car{persons.SelectMany(c => c.Cars).GroupBy(x => x.Color).).First()}");
 
         }
 
         static private void Task_2_d(IEnumerable<Person> persons)
         {
             WriteTaskHeader(Task_2_d);
-            int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-
-            var result = numbers.AwesomeSelect(n => n * π).ToArray();
+            var populareColor = persons.SelectMany(c => c.Cars).GroupBy(c => c.Color).OrderByDescending(c => c.Count()).First();
+            Console.WriteLine($"{populareColor.Key} is used {populareColor.Count()} times");
         }
 
         static private void Task_2_e(IEnumerable<Person> persons)
         {
             WriteTaskHeader(Task_2_e);
-			//TODO: Your code here
+            int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }; 
+            var result = numbers.AwesomeSelect(n => (int)(n * Math.PI)).ToArray();
         }
 
 
@@ -138,13 +150,18 @@ namespace LinqQuerySandbox
         static private void Task_3_c1(IEnumerable<Person> persons)
         {
             WriteTaskHeader(Task_3_c1);
-			//TODO: Your code here
+            var personHasSameName = (from p in persons
+                                     where p.FirstName == "Pascal"
+                                     select p).Any();
+
+            Console.WriteLine(personHasSameName);
+            
         }
 
         static private void Task_3_c2(IEnumerable<Person> persons)
         {
             WriteTaskHeader(Task_3_c2);
-			//TODO: Your code here
+            
         }
 
         #endregion

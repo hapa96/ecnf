@@ -6,15 +6,13 @@ namespace LinqQuerySandbox
 {
     public static class EnummerableExtension
     {
-        public static IEnumerable AwesomeSelect(this IEnumerable<int> folge, Func<int, int> func )
+        public static IEnumerable<T> AwesomeSelect<T>(this IEnumerable<T> input, Func<T, T> func )
         {
-            var returnList = new IEnumerable<int>();
-            foreach (var item in folge)
+            foreach (var item in input)
             {
-                func(item);
-            }
+                yield return func(item);
 
-            return folge;
+            }
         }
     }
 }
