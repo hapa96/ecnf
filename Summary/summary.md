@@ -1,12 +1,10 @@
-# **C**#
+# **C**# Summary
 
 [toc]
 
-## .Net Basics
+# .Net Basics
 
 ![image-20201031115731307](C:\Users\pascal.hauser1\Documents\repos\ecnf\Summary\summary.assets\image-20201031115731307.png)
-
-### Testfragen
 
 **Was versteht man unter „Managed Code“, was unter „Native Code“? Nennen Sie jeweils einige Vor- und Nachteile der beiden Ansätze.**
 
@@ -33,9 +31,7 @@
 
 ![image-20201031120801920](C:\Users\pascal.hauser1\Documents\repos\ecnf\Summary\summary.assets\image-20201031120801920.png)
 
-## C# Essentials
-
-### Testfragen
+# C# Essentials
 
 1. **Was ist der Hauptunterschied zwischen Structs und Klassen?**
 
@@ -80,11 +76,146 @@ If a parameter is not supplied by caller, C# will use the default value.
 
 8. **Value-Types können nicht mit null initialisiert werden?**  :arrow_right: ***richtig***
 
-### Type System
+9. **Welche Möglichkeiten gibt es, um bestehende Klassen um eigenen Code zu ergänzen?**
+   **Was sind die jeweiligen Vor- bzw. Nachteile?**
+
+   Extension-Methods sind dazu da, um bestehene Methoden zu existierenden Typen hinzuzufügen. Dafür braucht es keine Rekompilation und der bestehende Typ wird nicht verändert.
+
+   Von der Klasse erben und zusätzliche Methoden in der Subklasse implementieren. Source verändern schlecht möglich, da Klassen oftmals `sealed` sind.
+
+10. **Was sind die Vor- und Nachteile von unsafe code?**
+
+unsafe code = ich mache memory management selber
+
+Höhere Performanz möglich, jedoch auch grössere Fehleranfälligkeit.
+
+```c#
+unsafe static void Main()  
+{  
+   fixed (char* value = "safe")  
+   {  
+      char* ptr = value;  
+      while (*ptr != '\0')  
+      {  
+         Console.WriteLine(*ptr);  
+         ++ptr;  
+      }  
+   } 
+}
+```
+
+11. **Was sind anonyme Typen? Was sind deren Vor- und Nachteile?**
+
+```c#
+var v = new { Amount = 108, Message = "Hello" };  
+```
+
+Ein Vorteil: Inline definiert, sehr praktisch und kompakt.
+
+Ein Nachteil: keine Wiederverwendung.
+
+Verwendet v.A. beim Schreiben von LINQ-Expressions.
+
+## Type System
 
 ![image-20201031121419652](C:\Users\pascal.hauser1\Documents\repos\ecnf\Summary\summary.assets\image-20201031121419652.png)
 
-### Boxing& Unboxing
+## Nullable Types
+
+> Typen, die keinen definierten default wert besitzen. Diese können im Code den Wert `null`annehmen, was einige Konsequenzen mit sich zieht. Nullable Types sind value types (als struct implementiert). 
+
+**`?` makes value-types nullable**
+
+ ​ `int a = null` :x: 
+
+ `int? b = null` :heavy_check_mark: 
+
+**`??` Null-coalescing operator** Is a binary operator that is part of a conditional expression
+
+```c#
+class Person
+{
+    public string Name {get; set;}
+}
+var p = new Person();
+//so far
+string name = (p.Name != null) ? p.Name : "Unknown";
+//more compact using null coalescing operator
+string name = p.Name ?? "Unknown"; // Ist p == null -> "Unknow" ; p != null -> p.Name
+//Test if p is null included
+Person p1 = new Person();
+string name = p1?.Name ?? "Unknown"; //Wenn (p1 || Name) == null ~> "Unknown"
+```
+
+```c#
+//Combine with nullable types
+int? i = 3;
+int x = i ?? 0; //Wenn i == null -> cast nullable int zu int mit Wert 0
+int y??= 0; //Cast -> Wenn y == null = y = 0
+```
+
+![image-20201103065611276](C:\Users\pascal.hauser1\Documents\repos\ecnf\Summary\summary.assets\image-20201103065611276.png)
+
+## Operator Overloading
+
+> Operator overloading allows you to define `static` custom opertor implementations for various operators.
+
+![image-20201103065822198](C:\Users\pascal.hauser1\Documents\repos\ecnf\Summary\summary.assets\image-20201103065822198.png)
+
+``` C#
+class Stock{
+    string currentPrice = {get; set;}
+    public Stock (float price){
+        this.currentPrice = price;
+    }
+    
+   //Operator Overloading
+    public static Stock operator+ (Stock s1, Stock s2)
+    {
+        return new Stock(s1.currentPrice + s2.currentPrice);
+    }
+    
+    public static Stock operator- (Stock s1, Stock s2)
+    {
+        return new Stock(s1.currentPrice - s2.currentPrice);
+    }
+}   
+```
+
+![image-20201103072720283](C:\Users\pascal.hauser1\Documents\repos\ecnf\Summary\summary.assets\image-20201103072720283.png)
+
+## Extension Methods
+
+> Extensionmethods ermöglichen es, bestehende Typen durch neue Methoden zu erweitern., ohne die Definition des Ursprungstypenverändern zu müssen. 
+
+```c#
+// Adding a method to the string class
+public static class StringExtensions // Postfix = Extensions  ~> Common Extension
+{
+    public static bool IsCapitalized(this string s)
+    {
+        if (string.IsNullOrEpty (s)) return false;
+        return char.IsUpper(s[0]);
+    }
+}
+```
+
+## yield
+
+> Method that incrementally computes and returns sequence of values
+
+* Berechnung von grösseren Listen ==performant & Memory schonend== 
+* yield kann nur mit IEnumerable
+
+```C#
+public static IEnumerable<int> GenerateNumbers(int num)
+{
+    for (var i = 0; i<num; i++)
+        yield return i; 
+}
+```
+
+## Boxing& Unboxing
 
 > Object is the Mother of all Types
 
@@ -105,7 +236,7 @@ int i2 = (int) obj;
 
 **Generelle Regel:** Value Type = Stack; Reference Type= Heap :arrow_right: Schlussendlich Sache des VM Entwicklers
 
-### Classes
+## Classes
 
 ```C#
 //Declaration
@@ -124,7 +255,7 @@ d.FileName = "myFile.txt" //Calls setFileName("myyFile.txt")
 var s = d.FileName; //Calls getFileName()
 ```
 
-#### Automatic properties
+### Automatic properties
 
 ```c#
 class Data
@@ -217,11 +348,7 @@ class B : A //subclass (inherits from A, extends A)
 
 ![image-20201031141108346](C:\Users\pascal.hauser1\Documents\repos\ecnf\Summary\summary.assets\image-20201031141108346.png)
 
-
-
-## Delegates
-
-#### Testfragen
+# Delegates
 
 **Wann hat ein Delegate/Event den Wert null?**
 
@@ -483,9 +610,7 @@ public City this[string cityName]
 
 
 
-## LINQ
-
-### Testfragen
+# LINQ
 
 **Was ist der Unterschied zwischen der „query syntax“ und der „method syntax“? Was hat dies für Auswirkungen auf die Ausführung der Queries?**
 
@@ -550,7 +675,7 @@ Man muss mittels immediate query evaluation das Linq querry zu einer Abschliesse
 
 > In LINQ, expression trees are used to represent structured queries that target sources of data that implement IQueryable<T>. For example, the LINQ provider implements the IQueryable<T> interface for querying relational data stores. The C# compiler compiles queries that target such data sources into code that builds an expression tree at runtime. The query provider can then traverse the expression tree data structure and translate it into a query language appropriate for the data source.
 
-### Examples
+## Examples LINQ
 
 ```C#
 // Eine Person in der Liste heisst Pascal
@@ -598,8 +723,19 @@ var result = numbers.AwesomeSelect(n => (int)(n * Math.PI)).ToArray();
             foreach (var item in input)
             {
                 yield return func(item);
-
             }
         }
+```
+
+## LINQ with Query Syntax
+
+```C#
+// Eine Person in der Liste heisst Pascal
+var myNameExists = (from person in persons
+                    where (person.FirstName == "Pascal")
+                    select person).Any();
+
+//Zählen Sie die Anzahl Autos in der Liste 
+var cars = (from person in persons from car in person.Cars select car).Count() ;
 ```
 
